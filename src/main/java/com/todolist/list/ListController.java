@@ -18,8 +18,8 @@ public class ListController {
     @Autowired
     private ListService listService;
 
-    private final String NOT_FOUND_BODY = "";
-    private final String DELETED_BODY = "";
+    private final String NOT_FOUND_BODY = "List not found.";
+    private final String DELETED_BODY = "List successfully deleted.";
 
     @PostMapping
     public ResponseEntity<Object> saveList(@RequestBody @Valid ListDto listDto){

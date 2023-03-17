@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,8 +24,8 @@ public class TaskController {
     @Autowired
     private ListService listService;
 
-    private final String NOT_FOUND_BODY = "";
-    private final String DELETED_BODY = "";
+    private final String NOT_FOUND_BODY = "Task not found.";
+    private final String DELETED_BODY = "Task successfully deleted.";
 
     @PostMapping("/{listId}")
     public ResponseEntity<Object> saveTask(@PathVariable(value = "listId") UUID listId,@RequestBody @Valid TaskDto taskDto){
@@ -75,6 +77,7 @@ public class TaskController {
         var taskModel = new TaskModel();
         BeanUtils.copyProperties(taskDto, taskModel);
         taskModel.setId(taskModelOptional.get().getId());
+        taskModel.setPriority(String.valueOf(taskDto.priority()));
         return ResponseEntity.status(HttpStatus.OK).body(taskService.save(taskModel));
     }
 }
