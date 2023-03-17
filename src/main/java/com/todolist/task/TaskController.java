@@ -1,5 +1,6 @@
 package com.todolist.task;
 
+import com.todolist.list.ListService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +19,25 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private ListService listService;
+
     private final String NOT_FOUND_BODY = "";
     private final String DELETED_BODY = "";
 
-    @PostMapping
-    public ResponseEntity<Object> saveTask(@RequestBody @Valid TaskDto taskDto){
+    @PostMapping("/{listId}")
+    public ResponseEntity<Object> saveTask(@PathVariable(value = "listId") UUID listId,@RequestBody @Valid TaskDto taskDto){
         var taskModel = new TaskModel();
         BeanUtils.copyProperties(taskDto, taskModel);
+        taskModel.setPriority(String.valueOf(taskDto.priority()));
+        var listModelOptional = listService.findById(listId);
+
+        if(listModelOptional.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("List not found.");
+        }
+
+        taskModel.setListModel(listModelOptional.get());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.save(taskModel));
     }
 

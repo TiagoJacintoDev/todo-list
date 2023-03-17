@@ -1,5 +1,6 @@
 package com.todolist.task;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.todolist.list.ListModel;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -13,11 +14,12 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "task")
-public class TaskModel {
+public class TaskModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @JsonIgnore
     @ManyToOne
     private ListModel listModel;
 
